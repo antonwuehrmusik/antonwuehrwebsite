@@ -80,7 +80,7 @@
       .replace(/"/g, '&quot;');
   }
 
-  function createEventCard(event) {
+  function parseEventData(event) {
     var start   = event.start.dateTime || event.start.date;
     var date    = new Date(start);
     var dateISO = start.slice(0, 10);
@@ -89,39 +89,62 @@
       weekday: 'short', day: 'numeric', month: 'long', year: 'numeric'
     });
 
-    var timeStr = event.start.dateTime
-      ? date.toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' }) + ' Uhr'
-      : '';
+    var rawDesc       = event.description || '';
+    var isOpenEnd     = /open\s*end|ende\s*offen|end\s*offen|offen|tbd/i.test(rawDesc);
+    var isTimeUnknown = /zeit\s*offen|uhrzeit\s*offen|zeit\s*unbekannt|uhrzeit\s*unbekannt/i.test(rawDesc);
 
-    var location    = event.location    ? escapeHtml(event.location)    : '';
-    var description = event.description ? escapeHtml(event.description) : '';
-    var detail      = [timeStr, description].filter(Boolean).join(' · ');
+    var timeStr = '';
+    if (isTimeUnknown) {
+      timeStr = 'Uhrzeit noch offen';
+    } else if (event.start.dateTime) {
+      var startTime = date.toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' });
+      if (isOpenEnd) {
+        timeStr = 'ab ' + startTime + ' Uhr (Ende offen)';
+      } else if (event.end && event.end.dateTime) {
+        var endTime = new Date(event.end.dateTime).toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' });
+        timeStr = startTime + '–' + endTime + ' Uhr';
+      } else {
+        timeStr = startTime + ' Uhr';
+      }
+    }
 
-    var article = document.createElement('article');
-    article.className = 'show-card';
-    article.setAttribute('role', 'listitem');
-    article.innerHTML =
-      '<time class="show-date" datetime="' + dateISO + '">' + dateFormatted + '</time>' +
-      '<h3 class="show-venue">' + escapeHtml(event.summary || 'Auftritt') + '</h3>' +
-      (location ? '<p class="show-location">' + location + '</p>' : '') +
-      (detail   ? '<p class="show-detail">'   + detail   + '</p>' : '');
-    return article;
+    var bandMatch = rawDesc.match(/band:\s*(.+?)(?:\n|$)/i);
+    var band      = bandMatch ? escapeHtml(bandMatch[1].trim()) : '';
+    var cleanDesc = rawDesc
+      .replace(/band:\s*.+?(?:\n|$)/gi, '')
+      .replace(/open\s*end|ende\s*offen|end\s*offen|offen|tbd/gi, '')
+      .replace(/zeit\s*offen|uhrzeit\s*offen|zeit\s*unbekannt|uhrzeit\s*unbekannt/gi, '')
+      .trim();
+    var description = cleanDesc ? escapeHtml(cleanDesc) : '';
+
+    return {
+      dateISO:       dateISO,
+      dateFormatted: dateFormatted,
+      title:         escapeHtml(event.summary || 'Auftritt'),
+      band:          band,
+      location:      event.location ? escapeHtml(event.location) : '',
+      timeStr:       timeStr,
+      description:   description
+    };
   }
 
-  function animateCards(grid) {
-    if ('IntersectionObserver' in window) {
-      var io = new IntersectionObserver(function (entries) {
-        entries.forEach(function (entry) {
-          if (entry.isIntersecting) {
-            entry.target.classList.add('visible');
-            io.unobserve(entry.target);
-          }
-        });
-      }, { threshold: 0.12 });
-      grid.querySelectorAll('.show-card').forEach(function (c) { io.observe(c); });
-    } else {
-      grid.querySelectorAll('.show-card').forEach(function (c) { c.classList.add('visible'); });
-    }
+  var INITIAL_SHOW = 5;
+  var LOAD_MORE    = 5;
+
+  function createEventItem(event) {
+    var d = parseEventData(event);
+
+    var article = document.createElement('article');
+    article.className = 'show-item';
+    article.setAttribute('role', 'listitem');
+    article.innerHTML =
+      '<time class="show-date" datetime="' + d.dateISO + '">' + d.dateFormatted + '</time>' +
+      '<span class="show-venue">' + d.title + '</span>' +
+      (d.band        ? '<p class="show-band">♪ ' + d.band + '</p>' : '') +
+      (d.location    ? '<p class="show-location">' + d.location + '</p>' : '') +
+      (d.timeStr     ? '<p class="show-detail">' + d.timeStr + '</p>' : '') +
+      (d.description ? '<p class="show-desc">' + d.description + '</p>' : '');
+    return article;
   }
 
   function loadCalendarEvents() {
@@ -133,7 +156,7 @@
       + encodeURIComponent(CALENDAR_ID)
       + '/events?key=' + API_KEY
       + '&timeMin=' + encodeURIComponent(now)
-      + '&singleEvents=true&orderBy=startTime&maxResults=12';
+      + '&singleEvents=true&orderBy=startTime&maxResults=50';
 
     fetch(url)
       .then(function (res) { return res.json(); })
@@ -144,10 +167,40 @@
           grid.innerHTML = '<p class="shows-empty">Aktuell sind keine bevorstehenden Auftritte eingetragen. Schauen Sie bald wieder vorbei!</p>';
           return;
         }
-        data.items.forEach(function (event) {
-          grid.appendChild(createEventCard(event));
+
+        var items   = data.items;
+        var visible = INITIAL_SHOW;
+
+        var list = document.createElement('div');
+        list.className = 'show-list';
+        list.setAttribute('role', 'list');
+
+        var btn = document.createElement('button');
+        btn.className = 'btn btn-secondary shows-more-btn';
+
+        function render() {
+          list.innerHTML = '';
+          items.slice(0, visible).forEach(function (event) {
+            list.appendChild(createEventItem(event));
+          });
+          var remaining = items.length - visible;
+          if (remaining > 0) {
+            var next = Math.min(remaining, LOAD_MORE);
+            btn.textContent = 'Weitere ' + next + ' Termine anzeigen';
+            btn.hidden = false;
+          } else {
+            btn.hidden = true;
+          }
+        }
+
+        btn.addEventListener('click', function () {
+          visible += LOAD_MORE;
+          render();
         });
-        animateCards(grid);
+
+        grid.appendChild(list);
+        grid.appendChild(btn);
+        render();
       })
       .catch(function () {
         grid.innerHTML = '<p class="shows-empty">Auftritte konnten nicht geladen werden. Bitte direkt Kontakt aufnehmen.</p>';
@@ -155,26 +208,5 @@
   }
 
   loadCalendarEvents();
-
-  // ----- Show card entrance animation -----
-  if ('IntersectionObserver' in window) {
-    const io = new IntersectionObserver(function (entries) {
-      entries.forEach(function (entry) {
-        if (entry.isIntersecting) {
-          entry.target.classList.add('visible');
-          io.unobserve(entry.target);
-        }
-      });
-    }, { threshold: 0.12 });
-
-    document.querySelectorAll('.show-card').forEach(function (card) {
-      io.observe(card);
-    });
-  } else {
-    // Fallback: make all cards visible immediately
-    document.querySelectorAll('.show-card').forEach(function (card) {
-      card.classList.add('visible');
-    });
-  }
 
 }());
