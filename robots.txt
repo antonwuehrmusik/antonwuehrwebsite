@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://antonwuehrmusik.github.io/antonwuehrwebsite/sitemap.xml
