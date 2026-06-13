@@ -175,8 +175,14 @@
         list.className = 'show-list';
         list.setAttribute('role', 'list');
 
-        var btn = document.createElement('button');
-        btn.className = 'btn btn-secondary shows-more-btn';
+        var btnMore = document.createElement('button');
+        btnMore.className = 'btn btn-secondary shows-more-btn';
+        btnMore.hidden = true;
+
+        var btnLess = document.createElement('button');
+        btnLess.className = 'btn btn-secondary shows-more-btn';
+        btnLess.textContent = 'Weniger anzeigen';
+        btnLess.hidden = true;
 
         function render() {
           list.innerHTML = '';
@@ -185,21 +191,27 @@
           });
           var remaining = items.length - visible;
           if (remaining > 0) {
-            var next = Math.min(remaining, LOAD_MORE);
-            btn.textContent = 'Weitere ' + next + ' Termine anzeigen';
-            btn.hidden = false;
+            btnMore.textContent = 'Weitere ' + Math.min(remaining, LOAD_MORE) + ' Termine anzeigen';
+            btnMore.hidden = false;
           } else {
-            btn.hidden = true;
+            btnMore.hidden = true;
           }
+          btnLess.hidden = visible <= INITIAL_SHOW;
         }
 
-        btn.addEventListener('click', function () {
+        btnMore.addEventListener('click', function () {
           visible += LOAD_MORE;
           render();
         });
 
+        btnLess.addEventListener('click', function () {
+          visible = INITIAL_SHOW;
+          render();
+        });
+
         grid.appendChild(list);
-        grid.appendChild(btn);
+        grid.appendChild(btnMore);
+        grid.appendChild(btnLess);
         render();
       })
       .catch(function () {
