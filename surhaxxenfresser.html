@@ -10,8 +10,8 @@
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,400&family=Lora:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/style.css">
   <style>
-    .band-logos { display: flex; align-items: center; gap: 1.5rem; flex-wrap: wrap; margin-bottom: 1.5rem; }
-    .band-logo { display: block; max-height: 400px; width: auto; }
+    .band-logos { display: flex; flex-direction: row; align-items: center; gap: 1.5rem; flex-wrap: nowrap; margin-bottom: 1.5rem; }
+    .band-logo { height: 120px; width: auto; max-width: none; flex-shrink: 0; }
     .bio-page { padding-block: 5rem; background: var(--color-cream); min-height: 60vh; }
     .bio-page h1 { font-family: var(--font-heading); font-size: clamp(2rem, 5vw, 3rem); color: var(--color-chestnut); margin-bottom: 0.5rem; }
     .bio-page h2 { font-family: var(--font-heading); font-size: 1.35rem; color: var(--color-chestnut); margin-top: 2.5rem; margin-bottom: 0.75rem; }
@@ -140,50 +140,6 @@
     </div>
   </footer>
 
-  <script>
-    document.getElementById('year').textContent = new Date().getFullYear();
-
-    var links    = Array.from(document.querySelectorAll('.galerie-link'));
-    var lightbox = document.getElementById('lightbox');
-    var lbImg    = document.getElementById('lightbox-img');
-    var current  = 0;
-
-    function openLightbox(index) {
-      current = index;
-      lbImg.src = links[current].href;
-      lbImg.alt = links[current].querySelector('img').alt;
-      lightbox.classList.add('active');
-      document.body.style.overflow = 'hidden';
-    }
-
-    function closeLightbox() {
-      lightbox.classList.remove('active');
-      document.body.style.overflow = '';
-    }
-
-    links.forEach(function(link, i) {
-      link.addEventListener('click', function(e) {
-        e.preventDefault();
-        openLightbox(i);
-      });
-    });
-
-    document.getElementById('lightbox-close').addEventListener('click', closeLightbox);
-    document.getElementById('lightbox-prev').addEventListener('click', function() {
-      openLightbox((current - 1 + links.length) % links.length);
-    });
-    document.getElementById('lightbox-next').addEventListener('click', function() {
-      openLightbox((current + 1) % links.length);
-    });
-    lightbox.addEventListener('click', function(e) {
-      if (e.target === lightbox) closeLightbox();
-    });
-    document.addEventListener('keydown', function(e) {
-      if (!lightbox.classList.contains('active')) return;
-      if (e.key === 'Escape') closeLightbox();
-      if (e.key === 'ArrowLeft') openLightbox((current - 1 + links.length) % links.length);
-      if (e.key === 'ArrowRight') openLightbox((current + 1) % links.length);
-    });
-  </script>
+  <script src="js/main.js"></script>
 </body>
 </html>

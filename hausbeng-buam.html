@@ -179,50 +179,6 @@
     </div>
   </footer>
 
-  <script>
-    document.getElementById('year').textContent = new Date().getFullYear();
-
-    var links     = Array.from(document.querySelectorAll('.galerie-link'));
-    var lightbox  = document.getElementById('lightbox');
-    var lbImg     = document.getElementById('lightbox-img');
-    var current   = 0;
-
-    function openLightbox(index) {
-      current = index;
-      lbImg.src = links[current].href;
-      lbImg.alt = links[current].querySelector('img').alt;
-      lightbox.classList.add('active');
-      document.body.style.overflow = 'hidden';
-    }
-
-    function closeLightbox() {
-      lightbox.classList.remove('active');
-      document.body.style.overflow = '';
-    }
-
-    links.forEach(function(link, i) {
-      link.addEventListener('click', function(e) {
-        e.preventDefault();
-        openLightbox(i);
-      });
-    });
-
-    document.getElementById('lightbox-close').addEventListener('click', closeLightbox);
-    document.getElementById('lightbox-prev').addEventListener('click', function() {
-      openLightbox((current - 1 + links.length) % links.length);
-    });
-    document.getElementById('lightbox-next').addEventListener('click', function() {
-      openLightbox((current + 1) % links.length);
-    });
-    lightbox.addEventListener('click', function(e) {
-      if (e.target === lightbox) closeLightbox();
-    });
-    document.addEventListener('keydown', function(e) {
-      if (!lightbox.classList.contains('active')) return;
-      if (e.key === 'Escape') closeLightbox();
-      if (e.key === 'ArrowLeft') openLightbox((current - 1 + links.length) % links.length);
-      if (e.key === 'ArrowRight') openLightbox((current + 1) % links.length);
-    });
-  </script>
+  <script src="js/main.js"></script>
 </body>
 </html>

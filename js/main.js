@@ -239,4 +239,49 @@
 
   loadCalendarEvents();
 
+  // ----- Lightbox (alle Galerien) -----
+  var activeNav = null;
+
+  [
+    { selector: '.galerie-link-ueber', lightboxId: 'lightbox-ueber', imgId: 'lightbox-ueber-img', closeId: 'lightbox-ueber-close', prevId: 'lightbox-ueber-prev', nextId: 'lightbox-ueber-next' },
+    { selector: '.galerie-link',       lightboxId: 'lightbox',        imgId: 'lightbox-img',       closeId: 'lightbox-close',       prevId: 'lightbox-prev',       nextId: 'lightbox-next' }
+  ].forEach(function (cfg) {
+    var links    = Array.from(document.querySelectorAll(cfg.selector));
+    var lightbox = document.getElementById(cfg.lightboxId);
+    var lbImg    = document.getElementById(cfg.imgId);
+    if (!links.length || !lightbox || !lbImg) return;
+    var current = 0;
+
+    function open(index) {
+      current = index;
+      lbImg.src = links[current].href;
+      lbImg.alt = links[current].querySelector('img').alt;
+      lightbox.classList.add('active');
+      document.body.style.overflow = 'hidden';
+      activeNav = { prev: function () { open((current - 1 + links.length) % links.length); }, next: function () { open((current + 1) % links.length); }, close: close };
+    }
+
+    function close() {
+      lightbox.classList.remove('active');
+      document.body.style.overflow = '';
+      activeNav = null;
+    }
+
+    links.forEach(function (link, i) {
+      link.addEventListener('click', function (e) { e.preventDefault(); open(i); });
+    });
+
+    document.getElementById(cfg.closeId).addEventListener('click', close);
+    document.getElementById(cfg.prevId).addEventListener('click', function () { if (activeNav) activeNav.prev(); });
+    document.getElementById(cfg.nextId).addEventListener('click', function () { if (activeNav) activeNav.next(); });
+    lightbox.addEventListener('click', function (e) { if (e.target === lightbox) close(); });
+  });
+
+  document.addEventListener('keydown', function (e) {
+    if (!activeNav) return;
+    if (e.key === 'Escape')     activeNav.close();
+    if (e.key === 'ArrowLeft')  activeNav.prev();
+    if (e.key === 'ArrowRight') activeNav.next();
+  });
+
 }());
