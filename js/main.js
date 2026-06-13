@@ -190,8 +190,9 @@
             list.appendChild(createEventItem(event));
           });
           var remaining = items.length - visible;
-          if (remaining > 0) {
-            btnMore.textContent = 'Weitere ' + Math.min(remaining, LOAD_MORE) + ' Termine anzeigen';
+          var next = Math.min(remaining, LOAD_MORE);
+          if (next > 0) {
+            btnMore.textContent = next === 1 ? 'Weiteren 1 Termin anzeigen' : 'Weitere ' + next + ' Termine anzeigen';
             btnMore.hidden = false;
           } else {
             btnMore.hidden = true;
