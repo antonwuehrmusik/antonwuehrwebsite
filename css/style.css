@@ -191,6 +191,8 @@ ul {
 }
 
 .nav-dropdown-toggle {
+  -webkit-appearance: none;
+  appearance: none;
   font-family: var(--font-body);
   font-size: 0.95rem;
   font-weight: 600;
@@ -203,7 +205,8 @@ ul {
   text-transform: uppercase;
   padding: 0.25em 0;
   margin: 0;
-  line-height: inherit;
+  line-height: normal;
+  vertical-align: middle;
   transition: color var(--transition), border-color var(--transition);
   display: flex;
   align-items: center;
