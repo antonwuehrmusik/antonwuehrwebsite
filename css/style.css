@@ -349,12 +349,17 @@ ul {
   }
 
   .nav-dropdown-menu {
+    display: none;
     position: static;
     transform: none;
     box-shadow: none;
     background: rgba(255,255,255,0.06);
     border-radius: 0;
     padding: 0;
+  }
+
+  .nav-dropdown.is-open .nav-dropdown-menu {
+    display: block;
   }
 
   .nav-dropdown-menu li a,
