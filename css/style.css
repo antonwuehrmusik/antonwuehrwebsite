@@ -195,11 +195,13 @@ ul {
   color: var(--color-cream);
   background: none;
   border: none;
+  border-bottom: 2px solid transparent;
   cursor: pointer;
   letter-spacing: 0.05em;
   text-transform: uppercase;
-  padding-block: 0.25em;
-  border-bottom: 2px solid transparent;
+  padding: 0.25em 0;
+  margin: 0;
+  line-height: inherit;
   transition: color var(--transition), border-color var(--transition);
   display: flex;
   align-items: center;
