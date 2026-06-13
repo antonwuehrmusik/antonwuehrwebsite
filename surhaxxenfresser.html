@@ -10,7 +10,8 @@
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,400&family=Lora:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/style.css">
   <style>
-    .band-logo { display: block; max-height: 120px; width: auto; margin-bottom: 1.5rem; }
+    .band-logos { display: flex; align-items: center; gap: 1.5rem; flex-wrap: wrap; margin-bottom: 1.5rem; }
+    .band-logo { display: block; max-height: 100px; width: auto; }
     .bio-page { padding-block: 5rem; background: var(--color-cream); min-height: 60vh; }
     .bio-page h1 { font-family: var(--font-heading); font-size: clamp(2rem, 5vw, 3rem); color: var(--color-chestnut); margin-bottom: 0.5rem; }
     .bio-page h2 { font-family: var(--font-heading); font-size: 1.35rem; color: var(--color-chestnut); margin-top: 2.5rem; margin-bottom: 0.75rem; }
@@ -56,7 +57,10 @@
     <section class="bio-page">
       <div class="container bio-content">
 
-        <img src="img/shxf/logo.png" alt="Surhaxxenfresser Logo" class="band-logo">
+        <div class="band-logos">
+          <img src="img/shxf/logo.png" alt="Surhaxxenfresser Logo" class="band-logo">
+          <img src="img/shxf/logo-brutal.png" alt="Surhaxxenfresser Logo Brutal" class="band-logo">
+        </div>
         <h1>Surhaxxenfresser</h1>
         <p class="bio-subtitle">Volksmusik-Duo aus dem Bayerischen Wald</p>
 
