@@ -183,6 +183,87 @@ ul {
   border-bottom-color: var(--color-amber);
 }
 
+/* Dropdown nav */
+.nav-dropdown {
+  position: relative;
+}
+
+.nav-dropdown-toggle {
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--color-cream);
+  background: none;
+  border: none;
+  cursor: pointer;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  padding-block: 0.25em;
+  border-bottom: 2px solid transparent;
+  transition: color var(--transition), border-color var(--transition);
+  display: flex;
+  align-items: center;
+  gap: 0.3em;
+}
+
+.nav-dropdown-toggle:hover,
+.nav-dropdown.is-open .nav-dropdown-toggle {
+  color: var(--color-amber);
+  border-bottom-color: var(--color-amber);
+}
+
+.nav-dropdown-arrow {
+  font-size: 0.7em;
+  transition: transform 0.2s ease;
+}
+
+.nav-dropdown.is-open .nav-dropdown-arrow {
+  transform: rotate(180deg);
+}
+
+.nav-dropdown-menu {
+  display: none;
+  position: absolute;
+  top: calc(100% + 0.75rem);
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--color-bark);
+  border-radius: var(--radius);
+  box-shadow: 0 4px 16px rgba(0,0,0,0.25);
+  min-width: 200px;
+  padding: 0.5rem 0;
+  z-index: 100;
+  list-style: none;
+}
+
+.nav-dropdown.is-open .nav-dropdown-menu {
+  display: block;
+}
+
+.nav-dropdown-menu li a,
+.nav-dropdown-menu li span {
+  display: block;
+  padding: 0.65rem 1.2rem;
+  font-family: var(--font-body);
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--color-cream);
+  text-decoration: none;
+  letter-spacing: 0.04em;
+  transition: background var(--transition), color var(--transition);
+  border-bottom: none;
+}
+
+.nav-dropdown-menu li a:hover {
+  background: rgba(255,255,255,0.08);
+  color: var(--color-amber);
+}
+
+.nav-dropdown-menu li span {
+  opacity: 0.45;
+  cursor: default;
+}
+
 /* Hamburger button */
 .nav-toggle {
   display: none;
@@ -259,6 +340,27 @@ ul {
     display: block;
     padding: 0.85rem 1.5rem;
     border-bottom: none;
+  }
+
+  .nav-dropdown-toggle {
+    width: 100%;
+    justify-content: center;
+    padding: 0.85rem 1.5rem;
+  }
+
+  .nav-dropdown-menu {
+    position: static;
+    transform: none;
+    box-shadow: none;
+    background: rgba(255,255,255,0.06);
+    border-radius: 0;
+    padding: 0;
+  }
+
+  .nav-dropdown-menu li a,
+  .nav-dropdown-menu li span {
+    text-align: center;
+    padding: 0.65rem 1.5rem;
   }
 }
 

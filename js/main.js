@@ -1,6 +1,23 @@
 (function () {
   'use strict';
 
+  // ----- Besetzungen dropdown -----
+  document.querySelectorAll('.nav-dropdown').forEach(function (dropdown) {
+    var toggle = dropdown.querySelector('.nav-dropdown-toggle');
+    toggle.addEventListener('click', function (e) {
+      e.stopPropagation();
+      var isOpen = dropdown.classList.toggle('is-open');
+      toggle.setAttribute('aria-expanded', String(isOpen));
+    });
+  });
+
+  document.addEventListener('click', function () {
+    document.querySelectorAll('.nav-dropdown.is-open').forEach(function (dropdown) {
+      dropdown.classList.remove('is-open');
+      dropdown.querySelector('.nav-dropdown-toggle').setAttribute('aria-expanded', 'false');
+    });
+  });
+
   // ----- Mobile nav toggle -----
   const toggle = document.querySelector('.nav-toggle');
   const menu   = document.getElementById('nav-menu');
