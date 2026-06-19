@@ -457,10 +457,40 @@ ul {
   box-shadow: 6px 6px 0 var(--color-linen), 8px 8px 0 var(--color-amber);
   object-fit: cover;
   border-radius: var(--radius);
-  /* Placeholder styling when no image is present */
   background: var(--color-linen);
   aspect-ratio: 4 / 5;
 }
+
+.foto-slideshow {
+  position: relative;
+  width: 100%;
+  max-width: 380px;
+}
+
+.slideshow-prev,
+.slideshow-next {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgba(60, 35, 8, 0.55);
+  color: white;
+  border: none;
+  font-size: 2rem;
+  line-height: 1;
+  padding: 0.3rem 0.7rem;
+  cursor: pointer;
+  border-radius: var(--radius);
+  transition: background 0.2s;
+  z-index: 1;
+}
+
+.slideshow-prev:hover,
+.slideshow-next:hover {
+  background: rgba(60, 35, 8, 0.9);
+}
+
+.slideshow-prev { left: 0.5rem; }
+.slideshow-next { right: 0.5rem; }
 
 .bio h2 {
   font-family: var(--font-heading);

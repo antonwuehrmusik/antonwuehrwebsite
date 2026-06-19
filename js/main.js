@@ -239,43 +239,81 @@
 
   loadCalendarEvents();
 
-  // ----- Lightbox (alle Galerien) -----
-  var activeNav = null;
+  // ----- Foto-Slideshow (Über mich) -----
+  var slideshowFotos = [
+    'Bilder/FB_IMG_1724266123457.jpg',
+    'Bilder/IMG_1885.jpg',
+    'Bilder/IMG_1901.jpg',
+    'Bilder/IMG_1908.jpg',
+    'Bilder/IMG_1918.jpg',
+    'Bilder/IMG_1945.jpg',
+    'Bilder/IMG_1981.jpg',
+    'Bilder/IMG_1998.jpg',
+    'Bilder/IMG_2021.jpg',
+    'Bilder/IMG_2053.jpg',
+    'Bilder/IMG_2058.jpg',
+    'Bilder/IMG_2090.jpg',
+    'Bilder/IMG_2142.jpg',
+    'Bilder/IMG_2142-2.jpg',
+    'Bilder/IMG_2145-2.jpg',
+    'Bilder/IMG_5569[300].jpg',
+    'Bilder/IMG_5579[298].jpg'
+  ];
 
-  [
-    { selector: '.galerie-link-ueber', lightboxId: 'lightbox-ueber', imgId: 'lightbox-ueber-img', closeId: 'lightbox-ueber-close', prevId: 'lightbox-ueber-prev', nextId: 'lightbox-ueber-next' },
-    { selector: '.galerie-link',       lightboxId: 'lightbox',        imgId: 'lightbox-img',       closeId: 'lightbox-close',       prevId: 'lightbox-prev',       nextId: 'lightbox-next' }
-  ].forEach(function (cfg) {
-    var links    = Array.from(document.querySelectorAll(cfg.selector));
-    var lightbox = document.getElementById(cfg.lightboxId);
-    var lbImg    = document.getElementById(cfg.imgId);
-    if (!links.length || !lightbox || !lbImg) return;
-    var current = 0;
+  var slideshowImg  = document.getElementById('slideshow-img');
+  var slideshowPrev = document.querySelector('.slideshow-prev');
+  var slideshowNext = document.querySelector('.slideshow-next');
 
-    function open(index) {
-      current = index;
-      lbImg.src = links[current].href;
-      lbImg.alt = links[current].querySelector('img').alt;
-      lightbox.classList.add('active');
-      document.body.style.overflow = 'hidden';
-      activeNav = { prev: function () { open((current - 1 + links.length) % links.length); }, next: function () { open((current + 1) % links.length); }, close: close };
+  if (slideshowImg && slideshowPrev && slideshowNext) {
+    var slideshowIdx = 0;
+
+    function showSlide(index) {
+      slideshowIdx = (index + slideshowFotos.length) % slideshowFotos.length;
+      slideshowImg.src = slideshowFotos[slideshowIdx];
     }
 
-    function close() {
+    slideshowPrev.addEventListener('click', function () { showSlide(slideshowIdx - 1); });
+    slideshowNext.addEventListener('click', function () { showSlide(slideshowIdx + 1); });
+  }
+
+  // ----- Lightbox (Band-Galerien) -----
+  var activeNav = null;
+
+  var lightbox = document.getElementById('lightbox');
+  var lbImg    = document.getElementById('lightbox-img');
+  var lbLinks  = Array.from(document.querySelectorAll('.galerie-link'));
+
+  if (lightbox && lbImg && lbLinks.length) {
+    var lbCurrent = 0;
+
+    function lbOpen(index) {
+      lbCurrent = index;
+      lbImg.src = lbLinks[lbCurrent].href;
+      lbImg.alt = lbLinks[lbCurrent].querySelector('img').alt;
+      lightbox.classList.add('active');
+      document.body.style.overflow = 'hidden';
+      activeNav = {
+        prev:  function () { lbOpen((lbCurrent - 1 + lbLinks.length) % lbLinks.length); },
+        next:  function () { lbOpen((lbCurrent + 1) % lbLinks.length); },
+        close: lbClose
+      };
+    }
+
+    function lbClose() {
       lightbox.classList.remove('active');
       document.body.style.overflow = '';
       activeNav = null;
     }
 
-    links.forEach(function (link, i) {
-      link.addEventListener('click', function (e) { e.preventDefault(); open(i); });
+    lbLinks.forEach(function (link, i) {
+      link.addEventListener('click', function (e) { e.preventDefault(); lbOpen(i); });
     });
 
-    document.getElementById(cfg.closeId).addEventListener('click', close);
-    document.getElementById(cfg.prevId).addEventListener('click', function () { if (activeNav) activeNav.prev(); });
-    document.getElementById(cfg.nextId).addEventListener('click', function () { if (activeNav) activeNav.next(); });
-    lightbox.addEventListener('click', function (e) { if (e.target === lightbox) close(); });
-  });
+    document.getElementById('lightbox-close').addEventListener('click', lbClose);
+    document.getElementById('lightbox-prev').addEventListener('click', function () { if (activeNav) activeNav.prev(); });
+    document.getElementById('lightbox-next').addEventListener('click', function () { if (activeNav) activeNav.next(); });
+    lightbox.addEventListener('click', function (e) { if (e.target === lightbox) lbClose(); });
+  }
 
   document.addEventListener('keydown', function (e) {
     if (!activeNav) return;

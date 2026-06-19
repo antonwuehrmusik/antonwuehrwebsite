@@ -2,3 +2,14 @@
 Thumbs.db
 Desktop.ini
 *.tmp
+
+# Lokale Backups der Originalbilder (vor Optimierung)
+_originals/
+
+# Einmalige Helfer-Skripte (Bild-/Font-Optimierung), nicht deployen
+_optimize_images.py
+_download_fonts.py
+
+# Original-Foto-/Video-Sammlungen (nicht von der Website verwendet)
+Bilder/Hausbeng Buam Fotos & Videos/
+Bilder/Surhaxxenfresser Fotos & Videos/
