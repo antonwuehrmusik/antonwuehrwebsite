@@ -241,9 +241,8 @@
 
   // ----- Foto-Slideshow (Über mich) -----
   var slideshowFotos = [
-    'Bilder/FB_IMG_1724266123457.jpg',
-    'Bilder/IMG_1885.jpg',
     'Bilder/IMG_1901.jpg',
+    'Bilder/IMG_1885.jpg',
     'Bilder/IMG_1908.jpg',
     'Bilder/IMG_1918.jpg',
     'Bilder/IMG_1945.jpg',
@@ -257,7 +256,8 @@
     'Bilder/IMG_2142-2.jpg',
     'Bilder/IMG_2145-2.jpg',
     'Bilder/IMG_5569[300].jpg',
-    'Bilder/IMG_5579[298].jpg'
+    'Bilder/IMG_5579[298].jpg',
+    'Bilder/FB_IMG_1724266123457.jpg'
   ];
 
   var slideshowImg  = document.getElementById('slideshow-img');
